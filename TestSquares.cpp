@@ -9,7 +9,7 @@ std::vector< std::vector<cv::Point2f> > findSquares(cv::Mat imageInput);
 int main(int argc, char* argv[])
 {
 printf("Hit ESC key to quit\n");
-cv::VideoCapture cap(1); // open the camera
+cv::VideoCapture cap(0); // open the camera
 //cv::VideoCapture cap(“myVideo.avi"); // open the video file
 if (!cap.isOpened()) { // check if we succeeded
 printf("error - can't open the camera or video; hit any key to quit\n");
