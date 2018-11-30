@@ -51,7 +51,7 @@ int main(int argc, char* argv[]){
 	waitKey(0);
 	*/
 
-	//detectEdges(backgroundImage);
+	detectEdges(backgroundImage);
 	
 	//findTiles(backgroundImage, "largestArmy.jpg");
 	
@@ -65,6 +65,7 @@ int main(int argc, char* argv[]){
         findNumbers(image);
 	*/
 
+	/*
 	findTiles(backgroundImage,"brick1.jpg");
 	findTiles(backgroundImage,"brick2.jpg");
 	findTiles(backgroundImage,"brick3.jpg");
@@ -84,6 +85,7 @@ int main(int argc, char* argv[]){
 	findTiles(backgroundImage, "sheep2.jpg");
 	findTiles(backgroundImage, "sheep3.jpg");
 	findTiles(backgroundImage, "sheep4.jpg");
+	*/
 
 	return EXIT_SUCCESS;
 }
@@ -334,7 +336,7 @@ void detectEdges(Mat image){
 	cvtColor(image, imageGray, COLOR_BGR2GRAY);
 	threshold(imageGray,imageGray,195,255,THRESH_BINARY);
         imshow("BW",imageGray);
-        waitKey(0);
+        //waitKey(0);
 
 	blur(imageGray, detectedEdges, Size(3,3));
 	Canny(detectedEdges,detectedEdges, 30, 30*3, 3);
@@ -349,6 +351,32 @@ void detectEdges(Mat image){
 	}
 	imshow("source",image);
 	imshow("detected lines", houghEdges);
+	//waitKey(0);
+	//convert to slope intercept form
+	vector<vector<double>> mb(lines.size(), vector<double>(2));
+	for(int i=0; i<lines.size(); i++){
+		mb[i][0] = (double)(lines[i][1]-lines[i][3])/(double)(lines[i][0]-lines[i][2]);
+		mb[i][1] = (double)(lines[i][1])-(mb[i][0]*(double)(lines[i][0]));
+	}
+	//find intersections
+	vector<Point2f> intercepts;
+	for(int i=0; i<detectedEdges.rows; i++){
+		vector<int> y(lines.size());
+		for(int j=0; j<lines.size(); j++){
+			y[j] =(int)(mb[j][0] * (double)i + mb[j][1]);
+		}
+		for(int k=0; k<y.size(); k++){
+			for(int l=k; l<y.size(); l++){
+				if(y[k] = y[l]){
+					intercepts.push_back(Point2f(k,y[k]));
+				}
+			}
+		}
+	}
+	for(int i=0; i<intercepts.size(); i++){
+	//	circle(detectedEdges,intercepts[i],50,Scalar(0,255,0),10,8,0);
+	}
+	imshow("detected intesections", detectedEdges);
 	waitKey(0);
 }
 
