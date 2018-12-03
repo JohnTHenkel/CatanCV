@@ -6,6 +6,10 @@ vector<Hexagon> findAllHexTiles(const Mat& image){
 	int radius=110;
 	vector<string> templates={
 //	"desert.jpg",
+	"sheep1.jpg",
+	"sheep2.jpg",
+	"sheep3.jpg",
+	"sheep4.jpg",
 	"brick1.jpg",
 	"brick2.jpg",
 	"brick3.jpg",
@@ -19,11 +23,8 @@ vector<Hexagon> findAllHexTiles(const Mat& image){
 	"grain4.jpg",
 	"mountain1.jpg",
 	"mountain2.jpg",
-	"mountain3.jpg", 
-	"sheep1.jpg",
-	"sheep2.jpg",
-	"sheep3.jpg",
-	"sheep4.jpg"
+	"mountain3.jpg" 
+
 	};
 	for (auto& t: templates){
 		Point2f center = findSingleHexTile(image,t);

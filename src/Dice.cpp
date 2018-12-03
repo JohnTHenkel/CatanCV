@@ -9,7 +9,8 @@ int readDieRoll(Mat input){
 	findContours(imageClose,contours,RETR_CCOMP,CHAIN_APPROX_NONE);
 	
 	//boardContour should contain the single contour representing the hexagonal game board.
-	vector<vector<Point>> boardContour=findGameBoard(imageClose);
+	vector<vector<Point>> boardContour=findGameBoard(input);
+	
 	if(boardContour.at(0).empty()) return -1;
 	drawContours(input,boardContour,-1,Scalar(0,255,0),2,8);
 
@@ -64,20 +65,7 @@ int readDieRoll(Mat input){
 }
 
 
-vector<vector<cv::Point>> findGameBoard(Mat input){
-	vector<vector<Point>>boardContour;
-	vector<vector<Point>> allContours;
-	findContours(input,allContours,RETR_CCOMP,CHAIN_APPROX_NONE);
-	boardContour.resize(1);
-	for (size_t i=0;i<allContours.size();i++){
-		double area=contourArea(allContours.at(i));
-		
-		if((area>BOARD_AREA_MIN_THRESHOLD)&&(area<BOARD_AREA_MAX_THRESHOLD)){
-			boardContour.at(0)=allContours.at(i);
-		}
-	}
-	return boardContour;
-}
+
 
 
 Mat transformImage(Mat input){
