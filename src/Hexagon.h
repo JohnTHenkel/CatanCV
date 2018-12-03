@@ -2,6 +2,10 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <vector>
+#include <opencv2/xfeatures2d/nonfree.hpp>
+#include "opencv2/xfeatures2d.hpp"
+#include "Helpers.h"
+#include "Constants.h"
 using namespace std;
 using namespace cv;
 
@@ -14,4 +18,4 @@ class Hexagon{
 Point2f findSingleHexTile(const Mat& image,const string name);
 vector<Hexagon> findAllHexTiles(const Mat& image);
 vector<Point2f> correctCenters(const vector<Point2f> centers);
-
+void mapHexagons(const Mat& input);

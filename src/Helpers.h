@@ -4,4 +4,3 @@
 using namespace cv;
 using namespace std;
 void imshowresize(string name,const Mat& image,bool wait=true, bool destroy=true);
-void mapHexagons(Mat input);

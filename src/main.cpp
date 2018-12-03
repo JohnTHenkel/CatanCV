@@ -62,8 +62,8 @@ int main(int argc, char* argv[]){
         findNumbers(image);
 	*/
 
-
-	findAllHexTiles(backgroundImage);
+	mapHexagons(backgroundImage);
+	//findAllHexTiles(backgroundImage);
 	return EXIT_SUCCESS;
 }
 
