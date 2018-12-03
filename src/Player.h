@@ -1,7 +1,7 @@
-enum charColor{red,white,blue,orange};
+enum playerColor{red,white,blue,orange};
 class Player{
 public:
 	int score;
-	charColor color;
+	playerColor color;
 private:
 };

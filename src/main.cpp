@@ -1,12 +1,12 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <cmath>
-#include "constants.h"
-#include "dice.h"
-#include "tiles.h"
+#include "Constants.h"
+#include "Dice.h"
+#include "Hexagon.h"
 #include <opencv2/xfeatures2d/nonfree.hpp>
 #include "opencv2/xfeatures2d.hpp"
-#include "helpers.h"
+#include "Helpers.h"
 #include "Player.h"
 using namespace cv;
 using namespace std;
