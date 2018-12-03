@@ -1,9 +1,46 @@
-
 #include <opencv2/xfeatures2d/nonfree.hpp>
 #include "opencv2/xfeatures2d.hpp"
 #include "helpers.h"
-//REQUIRES xfeatures2d !!!
-Point2f findTiles(const Mat& image,const string& name){
+#include "tiles.h"
+
+vector<Point2f> findAllHexTiles(const Mat& image){
+	Mat hexImage=image;
+	vector<Point2f> centers;
+	int radius=110;
+	vector<string> templates={
+//	"desert.jpg",
+	"brick1.jpg",
+	"brick2.jpg",
+	"brick3.jpg",
+	"forest1.jpg",
+	"forest2.jpg",
+	"forest3.jpg",
+	"forest4.jpg",
+	"grain1.jpg",
+	"grain2.jpg",
+	"grain3.jpg",
+	"grain4.jpg",
+	"mountain1.jpg",
+	"mountain2.jpg",
+	"mountain3.jpg", 
+	"sheep1.jpg",
+	"sheep2.jpg",
+	"sheep3.jpg",
+	"sheep4.jpg"
+	};
+	for (auto& t: templates){
+		Point2f center = findSingleHexTile(image,t);
+		centers.push_back(center);		
+	}
+	vector<Point2f> correctedCenters=correctCenters(centers);
+	for(auto& p: correctedCenters){
+		circle(hexImage,p,(int)radius,Scalar(0,0,255),4);
+		circle(hexImage,p,10,Scalar(0,0,0),FILLED,LINE_8);
+	}
+	imshowresize("Final",hexImage);
+	return correctedCenters;
+}
+Point2f findSingleHexTile(const Mat& image,const string name){
 	Mat img_scene_color=image;
 	using namespace cv::xfeatures2d;
 	string imagePath = "Templates/";
@@ -99,4 +136,8 @@ Point2f findTiles(const Mat& image,const string& name){
 	matcher.release();
 	
 	return(center);
+}
+vector<Point2f> correctCenters(vector<Point2f> centers){
+	//TODO: Implement
+	return centers;
 }

@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include "constants.h"
 #include <opencv2/opencv.hpp>

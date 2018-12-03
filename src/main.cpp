@@ -62,39 +62,8 @@ int main(int argc, char* argv[]){
         findNumbers(image);
 	*/
 
-	vector<Point2f> centers;
-	int radius=110;
-	vector<string> templates={
-//	"desert.jpg",
-	"brick1.jpg",
-	"brick2.jpg",
-	"brick3.jpg",
-	"forest1.jpg",
-	"forest2.jpg",
-	"forest3.jpg",
-	"forest4.jpg",
-	"grain1.jpg",
-	"grain2.jpg",
-	"grain3.jpg",
-	"grain4.jpg",
-	"mountain1.jpg",
-	"mountain2.jpg",
-	"mountain3.jpg" 
-	"sheep1.jpg",
-	"sheep2.jpg",
-	"sheep3.jpg",
-	"sheep4.jpg"
-	};
-	for (auto& t: templates){
-	//	imshowresize("im",backgroundImage);
-		Point2f center = findTiles(backgroundImage,t);
-		centers.push_back(center);		
-	}
-	for(auto& p: centers){
-		circle(backgroundImage,p,(int)radius,Scalar(0,0,255),4);
-		circle(backgroundImage,p,10,Scalar(0,0,0),FILLED,LINE_8);
-	}
-	imshowresize("Final",backgroundImage);
+
+	findAllHexTiles(backgroundImage);
 	return EXIT_SUCCESS;
 }
 
