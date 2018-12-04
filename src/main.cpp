@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "Piece.h"
 #include "FindPieces.h"
+#include "FindBoardLocs.h"
 using namespace cv;
 using namespace std;
 
@@ -38,7 +39,8 @@ int main(int argc, char* argv[]){
                 cerr << "Failed to read input image"<<endl;
                 exit(EXIT_FAILURE);
         }
-
+	
+	vector<Point2f> centers = findBoardLocs(backgroundImage);
 	
 	vector<Piece> pieces = findPieces(imageGameState);
 	imageGameState = imread("TestPhotos/gameState.jpg");
