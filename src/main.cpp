@@ -8,6 +8,8 @@
 #include "opencv2/xfeatures2d.hpp"
 #include "Helpers.h"
 #include "Player.h"
+#include "Piece.h"
+#include "FindPieces.h"
 using namespace cv;
 using namespace std;
 
@@ -18,6 +20,7 @@ Mat diffImage(Mat image, Mat backgroundImage);
 void detectEdges(Mat image);
 void findNumbers(Mat image);
 
+
 int main(int argc, char* argv[]){
 	//Mat image = imread("TestPhotos/Dice6.png");
 	//Mat image = imread("TestPhotos/2018-11-07-162752.jpg");
@@ -26,12 +29,31 @@ int main(int argc, char* argv[]){
 	//Mat backgroundImage = imread("TestPhotos/2018-11-07-162036.jpg");
 	Mat backgroundImage = imread("TestPhotos/dice3.jpg");
 	Mat image = imread("TestPhotos/dice3.jpg");
+	Mat imageGameState = imread("TestPhotos/gameState2.jpg");
 	if(image.empty()){
 		cerr << "Failed to read input image"<<endl;
 		exit(EXIT_FAILURE);
 	}
+	if(imageGameState.empty()){
+                cerr << "Failed to read input image"<<endl;
+                exit(EXIT_FAILURE);
+        }
+
 	
+	vector<Piece> pieces = findPieces(imageGameState);
+	imageGameState = imread("TestPhotos/gameState.jpg");
+	pieces = findPieces(imageGameState);
+	imageGameState = imread("TestPhotos/gameState3.jpg");
+        pieces = findPieces(imageGameState);
+	imageGameState = imread("TestPhotos/gameState4.jpg");
+        pieces = findPieces(imageGameState);
+	imageGameState = imread("TestPhotos/gameState5.jpg");
+        pieces = findPieces(imageGameState);
 	
+
+
+
+
 	//cout<< "Dice roll: "<<readDieRoll(image)<<endl;
 
 	/*
@@ -61,9 +83,13 @@ int main(int argc, char* argv[]){
 	image = imread("TestPhotos/gameState3.jpg");
         findNumbers(image);
 	*/
+
+	/*
 	vector<vector<Point>> boardContour= findGameBoard(backgroundImage);
 	drawContours(backgroundImage,boardContour,-1,Scalar(0,255,0),2,8);
 	imshowresize("Board",backgroundImage);
+	*/
+
 	//mapHexagons(backgroundImage);
 	//findAllHexTiles(backgroundImage);
 	return EXIT_SUCCESS;

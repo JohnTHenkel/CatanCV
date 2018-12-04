@@ -1,7 +1,9 @@
-enum playerColor{red,white,blue,orange};
+// enum Color is defined in Enums.h
+//enum Color{red,white,blue,orange};
+#include "Enums.h"
 class Player{
 public:
 	int score;
-	playerColor color;
+	enum Color color;
 private:
 };
