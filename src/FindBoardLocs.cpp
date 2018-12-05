@@ -58,6 +58,8 @@ vector<Point2f> findBoardLocs(const Mat& image){
 		circle(im,centers.at(i),2,Scalar(255,0,0),3,8,0);
 		circle(im,centers.at(i),HEX_RADIUS,Scalar(0,0,0),3,8,0);
 	}
+	//imwrite("Output/findGameBoard.bmp",image);
+	imshow("centers", image);
 	imshowresize("centers", im);
 	waitKey(0);
 	return centers;

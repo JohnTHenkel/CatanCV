@@ -7,6 +7,7 @@
 #include "Helpers.h"
 #include "Constants.h"
 #include "Piece.h"
+#include "FindBoardLocs.h"
 using namespace std;
 using namespace cv;
 
@@ -14,3 +15,5 @@ using namespace cv;
 vector<Piece> findPieces(const Mat& image);
 
 PieceType defineType(vector<Point>);
+
+Point2f findRobber(const Mat& image);

@@ -30,7 +30,7 @@ int main(int argc, char* argv[]){
 	Mat backgroundImage = imread("TestPhotos/dice3.jpg");
 	//Mat backgroundImage = imread("backgroundImage.png");
 	Mat image = imread("TestPhotos/dice3.jpg");
-	Mat imageGameState = imread("TestPhotos/gameState2.jpg");
+	Mat imageGameState = imread("TestPhotos/gameState3.jpg");
 	if(image.empty()){
 		cerr << "Failed to read input image"<<endl;
 		exit(EXIT_FAILURE);
@@ -39,21 +39,9 @@ int main(int argc, char* argv[]){
                 cerr << "Failed to read input image"<<endl;
                 exit(EXIT_FAILURE);
         }
-    //VideoCapture cap(1);
-    /*
-    if(backgroundImage.empty()){
-
-	    while(1){
-	    	cap>>backgroundImage;
-	    	imshowresize("Press escape to capture the background image.",backgroundImage,false,false);
-	    	char key = cv::waitKey(1);
-			if (key == 27) break; 
-
-	    }
-		imwrite("backgroundImage.png",backgroundImage);
-	}
-	*/
-
+	
+	Point2f robber = findRobber(imageGameState);
+	
     vector<Tile> hexagons=findAllHexTiles(backgroundImage);
   	hexagons = assignTileNumbers(hexagons);
   	cout<<"hex"<<endl;
