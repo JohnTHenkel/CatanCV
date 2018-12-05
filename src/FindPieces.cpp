@@ -127,3 +127,46 @@ PieceType defineType(vector<Point> input){
 	}
 	return settlement;
 }
+
+Point2f findRobber(const Mat& image){
+	Mat imageHSV;
+	Mat binaryImage;
+	Mat image2 = image.clone();
+	cvtColor(image, imageHSV, COLOR_BGR2HSV);
+	inRange(imageHSV, Scalar(0,0,20), Scalar(255,100,235), binaryImage);
+	//imshow("grey", binaryImage);
+	//waitKey(0);
+	vector<vector<Point>> contours;
+	vector<vector<Point>> contoursAll;
+	vector<Point2f> centroids;
+        findContours(binaryImage,contoursAll,RETR_CCOMP,CHAIN_APPROX_NONE);
+	//binaryImage = ~binaryImage;
+	vector<Point2f> boardLocs = findBoardLocs(image2);
+	for(int i=0; i<contoursAll.size(); i++){
+		double area=contourArea(contoursAll.at(i));//find area
+		if(area < MAX_ROBBER_AREA && area > MIN_ROBBER_AREA){
+			Moments moment=moments(contoursAll.at(i),false);//find moment to find centroid
+                	centroids.push_back(Point2f(moment.m10/moment.m00,moment.m01/moment.m00));
+			contours.push_back(contoursAll.at(i));
+			drawContours(image,contoursAll,i,Scalar(255,255,255),2,8);
+		}
+	}
+	float minDist = 9999;
+	int centroidIndex;
+	int boardLocIndex;
+	for(int i=0; i<centroids.size(); i++){
+		for(int j=0; j<boardLocs.size(); j++){
+			if(norm(centroids.at(i)-boardLocs.at(j))<minDist){
+				minDist = norm(centroids.at(i)-boardLocs.at(j));
+				centroidIndex = i;
+				boardLocIndex = j;
+			}
+		}
+	}
+	drawContours(image,contours,centroidIndex,Scalar(0,0,0),2,8);
+	circle(image,centroids.at(centroidIndex),4,Scalar(255,0,0),4,8,0);
+	//imwrite("Output/findRobber.bmp", image);
+	imshow("robber",image);
+	waitKey(0);
+	return boardLocs.at(boardLocIndex);
+}

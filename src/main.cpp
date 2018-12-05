@@ -32,7 +32,7 @@ int main(int argc, char* argv[]){
 	//Mat backgroundImage = imread("TestPhotos/2018-11-07-162036.jpg");
 	Mat backgroundImage = imread("TestPhotos/dice3.jpg");
 	Mat image = imread("TestPhotos/dice3.jpg");
-	Mat imageGameState = imread("TestPhotos/gameState2.jpg");
+	Mat imageGameState = imread("TestPhotos/gameState3.jpg");
 	if(image.empty()){
 		cerr << "Failed to read input image"<<endl;
 		exit(EXIT_FAILURE);
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]){
 	
 	//Color largestArmy = findCardOwner(imageGameState,"largestArmy.jpg");
 	//Point2f cardCenter = findCard(image,"largestArmy.jpg");
-
+/*
     VideoCapture cap(1);
     size_t max=0;
     vector<numberLocation> maxNumberLocations;
@@ -63,6 +63,7 @@ int main(int argc, char* argv[]){
 		char key = cv::waitKey(1);
 		if (key == 27) break; 
     }
+*/
 
 //    vector<Tile> hexagons=findAllHexTiles(backgroundImage);
 
@@ -71,8 +72,8 @@ int main(int argc, char* argv[]){
 
 	//vector<Point2f> centers = findBoardLocs(backgroundImage);
 	
-	
-	vector<Piece> pieces = findPieces(imageGameState);
+	Point2f robber = findRobber(imageGameState);
+	//vector<Piece> pieces = findPieces(imageGameState);
 	/*
 	imageGameState = imread("TestPhotos/gameState.jpg");
 	pieces = findPieces(imageGameState);

@@ -17,4 +17,6 @@ const double MIN_ASPECT_RATIO_ROAD=4;
 const double MIN_ASPECT_RATIO_CITY = 1.6;
 const double MIN_PILE_AREA=500;
 const double HALF_CARD_LEN = 100;
+const double MIN_ROBBER_AREA = 50;
+const double MAX_ROBBER_AREA = 1000;
 
