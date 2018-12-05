@@ -12,6 +12,7 @@
 #include "FindPieces.h"
 #include "Tile.h"
 #include "FindCards.h"
+#include "FindAruco.h"
 using namespace cv;
 using namespace std;
 
@@ -44,9 +45,28 @@ int main(int argc, char* argv[]){
 	//Color largestArmy = findCardOwner(imageGameState,"largestArmy.jpg");
 	//Point2f cardCenter = findCard(image,"largestArmy.jpg");
 
+    VideoCapture cap(1);
+    size_t max=0;
+    vector<numberLocation> maxNumberLocations;
+    Mat imCap;
+    for(int i=0;i<300;i++){
+    	cap>>imCap;
+		vector<numberLocation> numberLocations =findArucoNumberTags(imCap);
+		for(auto&num: numberLocations){
+			//cout<<num.number<<" "<< num.location.x<<" ";
+		} 
+		if(max<numberLocations.size()){
+		max=numberLocations.size();
+		cout<<max;
+		cout<<endl;
+		}
+		char key = cv::waitKey(1);
+		if (key == 27) break; 
+    }
 
+//    vector<Tile> hexagons=findAllHexTiles(backgroundImage);
 
-	Color largestArmy = findCardOwner(imageGameState,"largestArmy.jpg");
+//	Color largestArmy = findCardOwner(imageGameState,"largestArmy.jpg");
 
 
 	//vector<Point2f> centers = findBoardLocs(backgroundImage);
@@ -104,7 +124,6 @@ int main(int argc, char* argv[]){
 	*/
 
 	//mapHexagons(backgroundImage);
-	findAllHexTiles(backgroundImage);
 	return EXIT_SUCCESS;
 }
 
