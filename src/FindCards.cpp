@@ -1,5 +1,90 @@
 #include "FindCards.h"
 
+
+//ASSUME A RED AND BLUE PILE ON OUTSIDE OF BOARD
+Color findCardOwner(const Mat& image, const string name){
+	Point2f card = findCard(image, name);
+	Mat redImage = isolateColor(image, 'r');
+	Mat blueImage = isolateColor(image, 'b');
+	vector<vector<Point>> boardContour=findGameBoard(image);
+        //find red contours
+        vector<vector<Point>> redContours;
+        vector<vector<Point>> redPieceContours;
+        vector<Point2f> redCentroids;
+        findContours(redImage,redContours,RETR_CCOMP,CHAIN_APPROX_NONE);
+        for (size_t i=0;i<redContours.size();i++){
+		Moments moment=moments(redContours.at(i),false);//find moment to find centroid
+                Point2f centroid=Point2f(moment.m10/moment.m00,moment.m01/moment.m00);//find centroid
+		if(pointPolygonTest(boardContour.at(0),centroid,false)<0){
+			double area=contourArea(redContours.at(i));
+			if(area > MIN_PILE_AREA){
+				if(norm(centroid-card)>HALF_CARD_LEN){
+					redPieceContours.push_back(redContours.at(i));
+					cout<<norm(centroid-card)<<endl;
+				}
+			}
+		}
+	}
+	vector<vector<Point>> blueContours;
+        vector<vector<Point>> bluePieceContours;
+        vector<Point2f> blueCentroids;
+        findContours(blueImage,blueContours,RETR_CCOMP,CHAIN_APPROX_NONE);
+        for (size_t i=0;i<blueContours.size();i++){
+		Moments moment=moments(blueContours.at(i),false);//find moment to find centroid
+                Point2f centroid=Point2f(moment.m10/moment.m00,moment.m01/moment.m00);//find centroid
+                if(pointPolygonTest(boardContour.at(0),centroid,false)<0){
+                        double area=contourArea(blueContours.at(i));
+                        if(area > MIN_PILE_AREA){
+				if(norm(centroid-card)>HALF_CARD_LEN){
+                                	bluePieceContours.push_back(blueContours.at(i));
+					cout<<norm(centroid-card)<<endl;
+				}
+                        }
+                }
+        }
+	for(int i=0; i<redPieceContours.size();i++){
+                drawContours(image,redPieceContours,i,Scalar(0,0,255),2, 8);
+        }
+        for(int i=0; i<bluePieceContours.size();i++){
+                drawContours(image,bluePieceContours,i,Scalar(255,0,0),2,8);
+        }
+	//find min distance to card
+	float redMinDist = 9999;
+	for(int i=0; i<redPieceContours.size(); i++){
+		Moments moment=moments(redPieceContours.at(i),false);//find moment to find centroid
+                Point2f centroid=Point2f(moment.m10/moment.m00,moment.m01/moment.m00);//find centroid
+		float distance = norm(centroid-card);
+		line( image, centroid, card, Scalar(0, 0, 255), 4 );
+		if(distance < redMinDist){
+			redMinDist = distance;
+		}
+	}
+	float blueMinDist = 9999;
+        for(int i=0; i<bluePieceContours.size(); i++){
+                Moments moment=moments(bluePieceContours.at(i),false);//find moment to find centroid
+                Point2f centroid=Point2f(moment.m10/moment.m00,moment.m01/moment.m00);//find centroid
+		float distance = norm(centroid-card);
+		line( image, centroid, card, Scalar(255, 0, 0), 4 );
+                if(distance < blueMinDist){
+			blueMinDist = distance;
+		}
+        }
+	imshowresize("red and blue contours",image);
+        waitKey(0);
+	if(redMinDist < blueMinDist){
+		cout<<name<<" belongs to red"<<endl;
+		return red;
+	}
+	else if(blueMinDist < redMinDist){
+		cout<<name<<" belongs to blue"<<endl;
+		return blue;
+	}
+	return white;
+}
+
+
+
+
 Point2f findCard(const Mat& image,const string name){
 	Mat img_scene_color=image;
 	//using namespace cv::xfeatures2d;
@@ -57,7 +142,8 @@ Point2f findCard(const Mat& image,const string name){
     	line( img_matches, scene_corners[1] + Point2f((float)img_object.cols, 0),scene_corners[2] + Point2f((float)img_object.cols, 0), Scalar( 0, 255, 0), 4 );
     	line( img_matches, scene_corners[2] + Point2f((float)img_object.cols, 0),scene_corners[3] + Point2f((float)img_object.cols, 0), Scalar( 0, 255, 0), 4 );
     	line( img_matches, scene_corners[3] + Point2f((float)img_object.cols, 0),scene_corners[0] + Point2f((float)img_object.cols, 0), Scalar( 0, 255, 0), 4 );
+	circle(img_matches,scene_corners[4] + Point2f((float)img_object.cols, 0),3,Scalar(255,0,0),3,8,0);
 	imshow("matches", img_matches);
 	waitKey(0);
-	return(obj_corners[4]);
+	return(scene_corners[4]);
 }

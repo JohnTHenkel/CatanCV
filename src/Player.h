@@ -2,8 +2,13 @@
 //enum Color{red,white,blue,orange};
 #include "Enums.h"
 class Player{
-public:
+private:
 	int score;
 	enum Color color;
-private:
+public:
+	Player(Color newColor){score = 0; color = newColor;}
+	int get_score() const {return score;}
+	Color get_color() const {return color;}
+	void set_score(int newScore){score = newScore;}
+	void add_score(int scoreToAdd){score = score + scoreToAdd;}
 };
