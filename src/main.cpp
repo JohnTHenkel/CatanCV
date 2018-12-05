@@ -19,7 +19,7 @@ using namespace std;
 
 
 
-void processNextTurn(vector<Player> gamePlayers,vector<Tile> hexagons); 
+void processNextTurn(VideoCapture& cap,vector<Player> gamePlayers,vector<Tile> hexagons); 
 
 int main(int argc, char* argv[]){
 	//Mat image = imread("TestPhotos/Dice6.png");
@@ -35,22 +35,15 @@ int main(int argc, char* argv[]){
 		cerr << "Failed to read input image"<<endl;
 		exit(EXIT_FAILURE);
 	}
-	if(imageGameState.empty()){
-                cerr << "Failed to read input image"<<endl;
-                exit(EXIT_FAILURE);
-        }
 	
-	Point2f robber = findRobber(imageGameState);
-	
+	VideoCapture cap(CAP_NUM);
     vector<Tile> hexagons=findAllHexTiles(backgroundImage);
-  	hexagons = assignTileNumbers(hexagons);
-  	cout<<"hex"<<endl;
+  	hexagons = assignTileNumbers(cap,hexagons);
   	Player player1(red);
   	Player player2(blue);
   	vector<Player> gamePlayers={player1,player2};
    	while(!((player1.get_score()>9))&&(!(player2.get_score()>9))){
-		cout<<"while"<<endl;
-		processNextTurn(gamePlayers,hexagons); 
+		processNextTurn(cap, gamePlayers,hexagons); 
 		
 
    	}
@@ -58,8 +51,8 @@ int main(int argc, char* argv[]){
    	return EXIT_SUCCESS;
 }
 
-void processNextTurn(vector<Player> gamePlayers,vector<Tile> hexagons){
-	VideoCapture cap(CAP_NUM);
+void processNextTurn(VideoCapture& cap,vector<Player> gamePlayers,vector<Tile> hexagons){
+
 	vector<int> dice;
 	Mat frame;
 	while(dice.size()<2){
@@ -67,17 +60,75 @@ void processNextTurn(vector<Player> gamePlayers,vector<Tile> hexagons){
 		dice= findArucoDiceTags(frame);
 		cout<<dice.size();
 	}
+	cap>>frame;
 	int diceroll=dice.at(0)+dice.at(1);
+	cout<<"Dice roll: "<<diceroll<<endl;
 	//robber
+	//Point2f robber = findRobber(frame);
+	Point2f robber =Point2f(0,0);
+	cap>>frame;
 	vector<Piece> pieces = findPieces(frame);
+	for(auto &player:gamePlayers){
+		player.set_score(0);
+	}
 	for (auto& p: pieces){
-		for(auto& h: hexagons){
-			double distance=norm(p.get_loc()-h.get_loc());
-			if(distance>60&&distance<110&&diceroll==h.get_number()){
-
+		PieceType switchCase = p.get_type();
+		int multiplicity=0;
+		switch(switchCase){
+			case road:
+				break;
+			case settlement:
+				multiplicity=1;
+				break;
+			case city:
+				multiplicity=2;
+				break;
+			default:
+				break;
+		}
+		for(auto &player:gamePlayers){
+			if(player.get_color()==p.get_color()){
+				player.add_score(multiplicity);
 			}
 		}
+		for(auto& h: hexagons){
+			double distance=norm(p.get_loc()-h.get_loc());
+			//check for robber
+			double robberDistance=norm(h.get_loc()-robber);
+		
+			if(distance>60&&distance<110&&diceroll==h.get_number()&&robberDistance>50){
+				if(multiplicity>0&&h.get_recource()!=desert){
+					Recource recourceCase=h.get_recource();
+					string resource="";
+					switch(recourceCase){
+						case grain:
+							resource="grain";
+							break;
+						case sheep:
+							resource="sheep";
+							break;
+						case brick:
+							resource="brick";
+							break;
+						case stone:
+							resource+"stone";
+							break;
+						case desert:
+							break;
+						default:
+							break;
+					}
+					if(resource.length()>0){
+						cout<<"Player "<<p.get_color()<<" receives "<<multiplicity<<" "<<resource<<endl;
+					}
+				}
+			}
+		}
+
 	}
-	cap.release();
-	//Color largestArmy = findCardOwner(imageGameState,"largestArmy.jpg");
+	cap>>frame;
+	Color largestArmy = findCardOwner(frame,"largestArmy.jpg");
+	for(auto& player:gamePlayers){
+		cout<<"Player: "<<player.get_color()<<" score: "<<player.get_score();
+	}
 }

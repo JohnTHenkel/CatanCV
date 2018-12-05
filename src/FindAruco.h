@@ -13,4 +13,4 @@ public:
 };
 vector<int> findArucoDiceTags(const Mat& image);
 vector<numberLocation> findArucoNumberTags (const Mat& image);
-vector<Tile> assignTileNumbers(vector<Tile> hexagons);
+vector<Tile> assignTileNumbers(VideoCapture& cap,vector<Tile> hexagons);

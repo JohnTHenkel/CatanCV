@@ -72,13 +72,13 @@ vector<numberLocation> findArucoNumberTags (const Mat& image){
 			
 		}
 	}
-	//imshowresize("aruco",image,false,false);
+	imshowresize("aruco",image,false,false);
 		
 		
 		return numberLocations;
 }
-vector<Tile> assignTileNumbers(vector<Tile> hexagons){
-	VideoCapture cap(CAP_NUM);
+vector<Tile> assignTileNumbers(VideoCapture& cap,vector<Tile> hexagons){
+	//VideoCapture cap(CAP_NUM);
 	size_t count=0;
   	vector<numberLocation> maxNumberLocations;
 	Mat imCap;
@@ -106,6 +106,6 @@ vector<Tile> assignTileNumbers(vector<Tile> hexagons){
    		putText(imCap,to_string(h.get_number()),h.get_loc(),FONT_HERSHEY_SIMPLEX,1,Scalar(0,0,0),2);
    	}
    	imshowresize("nums",imCap);
-   	cap.release();
+   //	cap.release();
     return hexagons;
 }

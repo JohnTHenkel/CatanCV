@@ -148,6 +148,7 @@ Point2f findRobber(const Mat& image){
 			Moments moment=moments(contoursAll.at(i),false);//find moment to find centroid
                 	centroids.push_back(Point2f(moment.m10/moment.m00,moment.m01/moment.m00));
 			contours.push_back(contoursAll.at(i));
+			if(contours.size()==0) return Point2f(0,0);
 			drawContours(image,contoursAll,i,Scalar(255,255,255),2,8);
 		}
 	}
@@ -163,10 +164,10 @@ Point2f findRobber(const Mat& image){
 			}
 		}
 	}
+	if(contours.size()==0) return Point2f(0,0);
 	drawContours(image,contours,centroidIndex,Scalar(0,0,0),2,8);
 	circle(image,centroids.at(centroidIndex),4,Scalar(255,0,0),4,8,0);
 	//imwrite("Output/findRobber.bmp", image);
-	imshow("robber",image);
-	waitKey(0);
+	imshowresize("robber",image);
 	return boardLocs.at(boardLocIndex);
 }
