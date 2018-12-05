@@ -1,6 +1,6 @@
 #include "Hexagon.h"
 
-vector<Hexagon> findAllHexTiles(const Mat& image){
+vector<Tile> findAllHexTiles(const Mat& image){
 	Mat hexImage=image;
 	vector<Point2f> centers;
 	int radius=110;
@@ -37,7 +37,7 @@ vector<Hexagon> findAllHexTiles(const Mat& image){
 	}
 	imshowresize("Final",hexImage);
 	//	mapHexagons(image);
-	vector<Hexagon> hexagons;
+	vector<Tile> hexagons;
 	return hexagons;
 }
 Point2f findSingleHexTile(const Mat& image,const string name){

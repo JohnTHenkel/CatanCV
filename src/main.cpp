@@ -11,6 +11,8 @@
 #include "Piece.h"
 #include "FindPieces.h"
 #include "FindBoardLocs.h"
+#include "Tile.h"
+#include "FindCards.h"
 using namespace cv;
 using namespace std;
 
@@ -40,6 +42,9 @@ int main(int argc, char* argv[]){
                 exit(EXIT_FAILURE);
         }
 	
+	Point2f cardCenter = findCard(image,"largestArmy.jpg");
+
+
 	vector<Point2f> centers = findBoardLocs(backgroundImage);
 	
 	vector<Piece> pieces = findPieces(imageGameState);
