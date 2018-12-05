@@ -10,7 +10,6 @@
 #include "Player.h"
 #include "Piece.h"
 #include "FindPieces.h"
-#include "FindBoardLocs.h"
 #include "Tile.h"
 #include "FindCards.h"
 using namespace cv;
@@ -42,11 +41,11 @@ int main(int argc, char* argv[]){
                 exit(EXIT_FAILURE);
         }
 	
-	Point2f cardCenter = findCard(image,"largestArmy.jpg");
+	//Point2f cardCenter = findCard(image,"largestArmy.jpg");
 
 
-	vector<Point2f> centers = findBoardLocs(backgroundImage);
-	
+
+	/*	
 	vector<Piece> pieces = findPieces(imageGameState);
 	imageGameState = imread("TestPhotos/gameState.jpg");
 	pieces = findPieces(imageGameState);
@@ -56,7 +55,7 @@ int main(int argc, char* argv[]){
         pieces = findPieces(imageGameState);
 	imageGameState = imread("TestPhotos/gameState5.jpg");
         pieces = findPieces(imageGameState);
-	
+	*/
 
 
 
@@ -98,7 +97,7 @@ int main(int argc, char* argv[]){
 	*/
 
 	//mapHexagons(backgroundImage);
-	//findAllHexTiles(backgroundImage);
+	findAllHexTiles(backgroundImage);
 	return EXIT_SUCCESS;
 }
 
