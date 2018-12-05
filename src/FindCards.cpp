@@ -145,7 +145,7 @@ Point2f findCard(const Mat& image,const string name){
     	line( img_matches, scene_corners[3] + Point2f((float)img_object.cols, 0),scene_corners[0] + Point2f((float)img_object.cols, 0), Scalar( 0, 255, 0), 4 );
 	circle(img_matches,scene_corners[4] + Point2f((float)img_object.cols, 0),3,Scalar(255,0,0),3,8,0);
 	//imwrite("Output/sift.bmp",img_matches);
-	imshow("matches", img_matches);
+	imshowresize("matches", img_matches);
 	waitKey(0);
 	return(scene_corners[4]);
 }

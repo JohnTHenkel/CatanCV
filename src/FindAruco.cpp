@@ -89,7 +89,7 @@ vector<Tile> assignTileNumbers(VideoCapture& cap,vector<Tile> hexagons){
 			for (auto &h: hexagons){
 				if(h.get_number()==0){
 					double distance=norm(h.get_loc()-(Point2f)num.location);
-					if(distance<100){
+					if(distance<70){
 						h.set_number(num.number-34);
 						count++;
 					}
@@ -106,6 +106,7 @@ vector<Tile> assignTileNumbers(VideoCapture& cap,vector<Tile> hexagons){
    		putText(imCap,to_string(h.get_number()),h.get_loc(),FONT_HERSHEY_SIMPLEX,1,Scalar(0,0,0),2);
    	}
    	imshowresize("nums",imCap);
+   	imwrite("Aruco.png",imCap);
    //	cap.release();
     return hexagons;
 }

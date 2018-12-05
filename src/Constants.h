@@ -1,6 +1,6 @@
 #pragma once
 //These values will depend on relative size of dice in frame
-const double SCALE=0.6;
+const double SCALE=0.5;
 const double DICE_AREA_MAX_THRESHOLD=800;
 const double DICE_AREA_MIN_THRESHOLD=650;
 const double DOT_AREA_MAX_THRESHOLD=40;

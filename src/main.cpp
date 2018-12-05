@@ -27,6 +27,7 @@ int main(int argc, char* argv[]){
 	//Mat base=imread("TestPhotos/2018-11-07-162701.jpg");
 	//Mat image =imread("TestPhotos/2018-11-20-152025.jpg");
 	//Mat backgroundImage = imread("TestPhotos/2018-11-07-162036.jpg");
+	 VideoCapture cap(CAP_NUM);
 	Mat backgroundImage = imread("TestPhotos/dice3.jpg");
 	//Mat backgroundImage = imread("backgroundImage.png");
 	Mat image = imread("TestPhotos/dice3.jpg");
@@ -36,8 +37,9 @@ int main(int argc, char* argv[]){
 		exit(EXIT_FAILURE);
 	}
 	
-	VideoCapture cap(CAP_NUM);
+	
     vector<Tile> hexagons=findAllHexTiles(backgroundImage);
+   
   	hexagons = assignTileNumbers(cap,hexagons);
   	Player player1(red);
   	Player player2(blue);
@@ -55,6 +57,9 @@ void processNextTurn(VideoCapture& cap,vector<Player> gamePlayers,vector<Tile> h
 
 	vector<int> dice;
 	Mat frame;
+	for(int i=0;i<120;i++){
+		cap>>frame;
+	}
 	while(dice.size()<2){
 		cap>>frame;
 		dice= findArucoDiceTags(frame);
@@ -129,6 +134,6 @@ void processNextTurn(VideoCapture& cap,vector<Player> gamePlayers,vector<Tile> h
 	cap>>frame;
 	Color largestArmy = findCardOwner(frame,"largestArmy.jpg");
 	for(auto& player:gamePlayers){
-		cout<<"Player: "<<player.get_color()<<" score: "<<player.get_score();
+		cout<<"Player: "<<player.get_color()<<" score: "<<player.get_score()<<endl;
 	}
 }
