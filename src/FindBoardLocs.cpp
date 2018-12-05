@@ -15,13 +15,14 @@ vector<Tile> initTiles(const Mat& image){
 
 
 vector<Point2f> findBoardLocs(const Mat& image){
-	vector<vector<Point>> boardContour=findGameBoard(image);
-	drawContours(image,boardContour,0,Scalar(0,0,255),2,8);
+	Mat im=image.clone();
+	vector<vector<Point>> boardContour=findGameBoard(im);
+	drawContours(im,boardContour,0,Scalar(0,0,255),2,8);
 	RotatedRect rect = minAreaRect(boardContour.at(0));
 	Point2f pt[4];
 	rect.points(pt);
 	for( int j = 0; j < 4; j++ ){
-		line( image, pt[j], pt[(j+1)%4], Scalar(0,255,0), 3, 8 );
+		line( im, pt[j], pt[(j+1)%4], Scalar(0,255,0), 3, 8 );
 	}
 
 	vector<Point2f> templatePt(4);
@@ -54,11 +55,12 @@ vector<Point2f> findBoardLocs(const Mat& image){
 	vector<Point2f> centers(19);
 	perspectiveTransform(templateCenters,centers,tform);
 	for(int i=0; i<19; i++){
-		circle(image,centers.at(i),2,Scalar(255,0,0),3,8,0);
-		circle(image,centers.at(i),HEX_RADIUS,Scalar(0,0,0),3,8,0);
+		circle(im,centers.at(i),2,Scalar(255,0,0),3,8,0);
+		circle(im,centers.at(i),HEX_RADIUS,Scalar(0,0,0),3,8,0);
 	}
 	//imwrite("Output/findGameBoard.bmp",image);
 	imshow("centers", image);
+	imshowresize("centers", im);
 	waitKey(0);
 	return centers;
 }

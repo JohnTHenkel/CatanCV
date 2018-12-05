@@ -10,7 +10,6 @@
 #include "Player.h"
 #include "Piece.h"
 #include "FindPieces.h"
-#include "FindBoardLocs.h"
 #include "Tile.h"
 #include "FindCards.h"
 using namespace cv;
@@ -43,6 +42,11 @@ int main(int argc, char* argv[]){
         }
 	
 	//Color largestArmy = findCardOwner(imageGameState,"largestArmy.jpg");
+	//Point2f cardCenter = findCard(image,"largestArmy.jpg");
+
+
+
+	Color largestArmy = findCardOwner(imageGameState,"largestArmy.jpg");
 
 
 	//vector<Point2f> centers = findBoardLocs(backgroundImage);
@@ -100,7 +104,7 @@ int main(int argc, char* argv[]){
 	*/
 
 	//mapHexagons(backgroundImage);
-	//findAllHexTiles(backgroundImage);
+	findAllHexTiles(backgroundImage);
 	return EXIT_SUCCESS;
 }
 

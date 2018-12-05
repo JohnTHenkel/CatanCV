@@ -19,5 +19,5 @@ class Hexagon{
 */
 Point2f findSingleHexTile(const Mat& image,const string name);
 vector<Tile> findAllHexTiles(const Mat& image);
-vector<Point2f> correctCenters(const vector<Point2f> centers);
+vector<Point2f> correctCenters(const vector<Point2f> centers,const Mat& image);
 void mapHexagons(const Mat& input);

@@ -1,7 +1,8 @@
 #include "Hexagon.h"
-
+#include "FindAruco.h"
+#include "FindBoardLocs.h"
 vector<Tile> findAllHexTiles(const Mat& image){
-	Mat hexImage=image;
+	Mat hexImage=image.clone();
 	vector<Point2f> centers;
 	int radius=110;
 	vector<string> templates={
@@ -30,14 +31,70 @@ vector<Tile> findAllHexTiles(const Mat& image){
 		Point2f center = findSingleHexTile(image,t);
 		centers.push_back(center);		
 	}
-	vector<Point2f> correctedCenters=correctCenters(centers);
+
+	for(auto& p: centers){
+		circle(hexImage,p,(int)radius,Scalar(0,0,255),4);
+		circle(hexImage,p,10,Scalar(0,0,0),FILLED,LINE_8);
+	}
+	imshowresize("Hexes",hexImage);
+	hexImage=image.clone();
+
+	vector<Point2f> correctedCenters=correctCenters(centers,image);
 	for(auto& p: correctedCenters){
 		circle(hexImage,p,(int)radius,Scalar(0,0,255),4);
 		circle(hexImage,p,10,Scalar(0,0,0),FILLED,LINE_8);
 	}
-	imshowresize("Final",hexImage);
-	//	mapHexagons(image);
+	imshowresize("Corrected hexes",hexImage);
 	vector<Tile> hexagons;
+
+	for (int i=0;i<4;i++){
+		Tile tile(sheep, correctedCenters.at(i));	
+		hexagons.push_back(tile);
+	}
+	for (int i=4;i<7;i++){
+		Tile tile(brick, correctedCenters.at(i));	
+		hexagons.push_back(tile);
+	}
+	for (int i=7;i<11;i++){
+		Tile tile(wood, correctedCenters.at(i));	
+		hexagons.push_back(tile);
+	}
+	for (int i=11;i<15;i++){
+		Tile tile(grain, correctedCenters.at(i));	
+		hexagons.push_back(tile);
+	}
+	for (int i=15;i<18;i++){
+		Tile tile(stone, correctedCenters.at(i));	
+		hexagons.push_back(tile);
+	}
+	Tile tile(desert, correctedCenters.at(18));
+	hexagons.push_back(tile);
+	for(int i=0; i<hexagons.size(); i++){
+		Recource switchCase = hexagons.at(i).get_recource();
+		switch(switchCase){
+			case wood:
+				putText(hexImage,"wood",hexagons.at(i).get_loc(),FONT_HERSHEY_SIMPLEX,1,Scalar(0,0,0),2);
+				break;
+			case grain:
+				putText(hexImage,"grain",hexagons.at(i).get_loc(),FONT_HERSHEY_SIMPLEX,1,Scalar(0,0,0),2);
+				break;
+			case sheep:
+				putText(hexImage,"sheep",hexagons.at(i).get_loc(),FONT_HERSHEY_SIMPLEX,1,Scalar(0,0,0),2);
+				break;
+			case brick:
+				putText(hexImage,"brick",hexagons.at(i).get_loc(),FONT_HERSHEY_SIMPLEX,1,Scalar(0,0,0),2);
+				break;
+			case stone:
+				putText(hexImage,"stone",hexagons.at(i).get_loc(),FONT_HERSHEY_SIMPLEX,1,Scalar(0,0,0),2);
+				break;
+			case desert:
+				putText(hexImage,"desert",hexagons.at(i).get_loc(),FONT_HERSHEY_SIMPLEX,1,Scalar(0,0,0),2);
+				break;
+			default:
+				break;
+		}
+	}
+	imshowresize("labels",hexImage);
 	return hexagons;
 }
 Point2f findSingleHexTile(const Mat& image,const string name){
@@ -137,9 +194,27 @@ Point2f findSingleHexTile(const Mat& image,const string name){
 	
 	return(center);
 }
-vector<Point2f> correctCenters(vector<Point2f> centers){
+vector<Point2f> correctCenters(vector<Point2f> centers,const Mat& image){
 	//TODO: Implement
-	return centers;
+	vector<Point2f>newCenters=centers;
+	Mat im=image;
+	vector<Point2f> boardCenters = findBoardLocs(im);
+	size_t minJ;
+	double minDistance;
+	for(size_t i=0;i<newCenters.size();i++){//this should iterate through boardcenters
+		minDistance=999999;
+		for (size_t j=boardCenters.size()-1;j!=-1;j--){
+			if(norm(newCenters.at(i)-boardCenters.at(j))<minDistance){
+				minDistance=norm(newCenters.at(i)-boardCenters.at(j));
+				minJ=j;
+			}
+		}
+		newCenters.at(i)=boardCenters.at(minJ);
+		boardCenters.erase(boardCenters.begin()+minJ);
+
+	}
+	newCenters.push_back(boardCenters.at(0));
+	return newCenters;
 }
 void mapHexagons(const Mat& input){
 	Mat imageGray;
