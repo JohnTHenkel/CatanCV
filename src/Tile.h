@@ -5,7 +5,7 @@ class Tile{
 private:
 	enum Recource resourceType;
 	Point2f location;
-	int number;
+	int number=0;
 public:
 	Tile(Point2f newLoc){
 		location = newLoc;
@@ -24,5 +24,5 @@ public:
 	int get_number() const {return number;}
 	Point2f get_loc() const {return location;}
 	Recource get_recource() const {return resourceType;}
-	
+
 };

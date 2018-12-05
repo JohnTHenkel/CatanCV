@@ -25,8 +25,8 @@ vector<Tile> findAllHexTiles(const Mat& image){
 	"mountain1.jpg",
 	"mountain2.jpg",
 	"mountain3.jpg" 
-
 	};
+
 	for (auto& t: templates){
 		Point2f center = findSingleHexTile(image,t);
 		centers.push_back(center);		

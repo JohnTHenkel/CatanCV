@@ -9,6 +9,7 @@ void imshowresize(string name,const Mat& image,bool wait, bool destroy){
 	imshow(name,imageResized);
 	if(wait) waitKey(0);
 	if(destroy) destroyWindow(name);
+	imageResized.release();
 }
 //return binary image where white represents pixels of specified color
 //'r' red, 'y' yellow, 'b' blue 'o' orange

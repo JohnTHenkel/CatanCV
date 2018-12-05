@@ -1,6 +1,8 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/aruco.hpp>
 #include "Helpers.h"
+#include "Constants.h"
+#include "Tile.h"
 #include <vector>
 using namespace std;
 using namespace cv;
@@ -11,3 +13,4 @@ public:
 };
 vector<int> findArucoDiceTags(const Mat& image);
 vector<numberLocation> findArucoNumberTags (const Mat& image);
+vector<Tile> assignTileNumbers(vector<Tile> hexagons);

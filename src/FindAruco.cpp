@@ -25,12 +25,15 @@ vector<int> findArucoDiceTags (const Mat& image){
 	aruco::detectMarkers(image, dictionary, markerCorners, markerIds, detectorParams, rejectedCandidates);
 	if (markerIds.size() > 0) {
 		aruco::drawDetectedMarkers(image, markerCorners, markerIds);
+		vector<Vec3d> rvecs, tvecs;
+		aruco::estimatePoseSingleMarkers(markerCorners, markerLength, K, distCoeffs,	rvecs, tvecs);
+		std::vector<cv::Point2d> p;
 		//imshowresize("aruco",image,false,false);
 	}
 	vector<int>diceMarkers;
 	for (auto & i: markerIds){
 		if (i<6){
-			diceMarkers.push_back(i);
+			diceMarkers.push_back(i+1);
 		}
 	}
 	return diceMarkers;
@@ -60,17 +63,49 @@ vector<numberLocation> findArucoNumberTags (const Mat& image){
 			pointsInterest.push_back(cv::Point3d(markerLength/2, markerLength/2, 0));
 			std::vector<cv::Point2d> p;
 			cv::projectPoints(pointsInterest, rvecs[i], tvecs[i], K, distCoeffs, p);
-			if(markerIds.at(i)<6) break;
-			numberLocation numLoc;
-			numLoc.number=markerIds.at(i);
-			numLoc.location=p.at(0);
-			numberLocations.push_back(numLoc);
+			if(markerIds.at(i)>6){
+				numberLocation numLoc;
+				numLoc.number=markerIds.at(i);
+				numLoc.location=p.at(0);
+				numberLocations.push_back(numLoc);
+			}
 			
 		}
 	}
-		//imshow("aruco",image);
-		imshowresize("aruco",image,false,false);
+	//imshowresize("aruco",image,false,false);
 		
 		
 		return numberLocations;
+}
+vector<Tile> assignTileNumbers(vector<Tile> hexagons){
+	VideoCapture cap(CAP_NUM);
+	size_t count=0;
+  	vector<numberLocation> maxNumberLocations;
+	Mat imCap;
+    while(count<18){
+    	cap>>imCap;
+		vector<numberLocation> numberLocations =findArucoNumberTags(imCap);
+		for(auto&num: numberLocations){
+			for (auto &h: hexagons){
+				if(h.get_number()==0){
+					double distance=norm(h.get_loc()-(Point2f)num.location);
+					if(distance<100){
+						h.set_number(num.number-34);
+						count++;
+					}
+				}
+			}
+		} 
+		cout<<"Count: "<<count<<endl;
+		numberLocations.clear();
+		char key = cv::waitKey(1);
+		if (key == 27) break; 
+    }
+
+    for(auto& h:hexagons){
+   		putText(imCap,to_string(h.get_number()),h.get_loc(),FONT_HERSHEY_SIMPLEX,1,Scalar(0,0,0),2);
+   	}
+   	imshowresize("nums",imCap);
+   	cap.release();
+    return hexagons;
 }

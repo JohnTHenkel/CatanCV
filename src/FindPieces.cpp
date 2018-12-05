@@ -4,8 +4,8 @@
 vector<Piece> findPieces(const Mat& image){
 	Mat redImage = isolateColor(image, 'r');
 	Mat blueImage = isolateColor(image, 'b');
-	imshow("red",redImage);
-	imshow("blue",blueImage);
+	//imshow("red",redImage);
+	//imshow("blue",blueImage);
 	//waitKey(0);
 	//get contour of outer edge of board
 	vector<vector<Point>> boardContour=findGameBoard(image);
@@ -85,7 +85,7 @@ vector<Piece> findPieces(const Mat& image){
 				break;
 		}
 	}
-	imshow("pieces",image);
+	imshowresize("pieces",image);
 	waitKey(0);
 
 	/*
