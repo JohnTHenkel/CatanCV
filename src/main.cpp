@@ -42,13 +42,14 @@ int main(int argc, char* argv[]){
                 exit(EXIT_FAILURE);
         }
 	
-	Color largestArmy = findCardOwner(imageGameState,"largestArmy.jpg");
+	//Color largestArmy = findCardOwner(imageGameState,"largestArmy.jpg");
 
 
 	//vector<Point2f> centers = findBoardLocs(backgroundImage);
 	
-	/*
+	
 	vector<Piece> pieces = findPieces(imageGameState);
+	/*
 	imageGameState = imread("TestPhotos/gameState.jpg");
 	pieces = findPieces(imageGameState);
 	imageGameState = imread("TestPhotos/gameState3.jpg");

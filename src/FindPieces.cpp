@@ -85,6 +85,7 @@ vector<Piece> findPieces(const Mat& image){
 				break;
 		}
 	}
+	//imwrite("Output/findPieces.bmp",image);
 	imshow("pieces",image);
 	waitKey(0);
 
