@@ -9,6 +9,7 @@ vector<Piece> findPieces(const Mat& image){
 	//waitKey(0);
 	//get contour of outer edge of board
 	vector<vector<Point>> boardContour=findGameBoard(image);
+	cout<<boardContour.size()<<endl;
 	//find red contours
 	vector<vector<Point>> redContours;
 	vector<vector<Point>> redPieceContours;

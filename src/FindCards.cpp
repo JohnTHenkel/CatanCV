@@ -4,6 +4,9 @@
 //ASSUME A RED AND BLUE PILE ON OUTSIDE OF BOARD
 Color findCardOwner(const Mat& image, const string name){
 	Point2f card = findCard(image, name);
+	if(card.x==0&&card.y==0){
+		return unassigned;
+	}
 	Mat redImage = isolateColor(image, 'r');
 	Mat blueImage = isolateColor(image, 'b');
 	vector<vector<Point>> boardContour=findGameBoard(image);
@@ -129,8 +132,16 @@ Point2f findCard(const Mat& image,const string name){
 		obj.push_back( keypoints_object[ good_matches[i].queryIdx ].pt );
         	scene.push_back( keypoints_scene[ good_matches[i].trainIdx ].pt );
 	}
-
-	Mat tform = findHomography(obj, scene, RANSAC);
+	Mat tform;
+	try{
+	tform = findHomography(obj, scene, RANSAC);
+	}
+	catch(...){
+		return Point2f(0,0);
+	}
+	if(tform.empty()){
+		return Point2f(0,0);
+	}	
 	vector<Point2f> obj_corners(5);
     	obj_corners[0] = Point2f(0, 0);
     	obj_corners[1] = Point2f( (float)img_object.cols, 0 );
@@ -138,7 +149,11 @@ Point2f findCard(const Mat& image,const string name){
     	obj_corners[3] = Point2f( 0, (float)img_object.rows );
 	obj_corners[4] = Point2f((float)img_object.cols/2,(float)img_object.rows/2);
     	vector<Point2f> scene_corners(5);
+    	try{	
     	perspectiveTransform( obj_corners, scene_corners, tform);
+    }catch(...){
+    	return Point2f(0,0);
+    }
 	line( img_matches, scene_corners[0] + Point2f((float)img_object.cols, 0),scene_corners[1] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4 );
     	line( img_matches, scene_corners[1] + Point2f((float)img_object.cols, 0),scene_corners[2] + Point2f((float)img_object.cols, 0), Scalar( 0, 255, 0), 4 );
     	line( img_matches, scene_corners[2] + Point2f((float)img_object.cols, 0),scene_corners[3] + Point2f((float)img_object.cols, 0), Scalar( 0, 255, 0), 4 );

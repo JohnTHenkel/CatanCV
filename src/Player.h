@@ -11,7 +11,7 @@ public:
 	Color get_color() const {return color;}
 	void set_score(int newScore){score = newScore;}
 	void add_score(int scoreToAdd){score = score + scoreToAdd;}
-	string printColor(){
+	string print_color(){
 		Color switchCase = color;
 		switch(switchCase){
 			case red:

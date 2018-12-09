@@ -26,6 +26,7 @@ Mat isolateColor(const Mat& image, char color){
 		case 'r': //red
 			hue = 90;
 			hueRange = 8;
+			//hueRange = 10;
 			shouldInverse = true;
 			break;
 		case 'y': //yellow
@@ -39,10 +40,10 @@ Mat isolateColor(const Mat& image, char color){
 		case 'o': //orange
 			hue = 30;
 			break;
-		case 't':
+		case 't': //turquoise
 			hueRange = 20;
-			saturationFloor = 60;
-			valueFloor = 50;
+			saturationFloor = 70;
+			valueFloor = 60;
 			hue=90;
 			break;
 		default:

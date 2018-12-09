@@ -3,7 +3,6 @@
 #include <opencv2/opencv.hpp>
 #include <cmath>
 #include "Constants.h"
-#include "Dice.h"
 #include "Hexagon.h"
 #include <opencv2/xfeatures2d/nonfree.hpp>
 #include "opencv2/xfeatures2d.hpp"
@@ -22,25 +21,33 @@ using namespace std;
 void processNextTurn(VideoCapture& cap,vector<Player> gamePlayers,vector<Tile> hexagons); 
 
 int main(int argc, char* argv[]){
-	//Mat image = imread("TestPhotos/Dice6.png");
-	//Mat image = imread("TestPhotos/2018-11-07-162752.jpg");
-	//Mat base=imread("TestPhotos/2018-11-07-162701.jpg");
-	//Mat image =imread("TestPhotos/2018-11-20-152025.jpg");
-	//Mat backgroundImage = imread("TestPhotos/2018-11-07-162036.jpg");
 	 VideoCapture cap(CAP_NUM);
-	Mat backgroundImage = imread("TestPhotos/dice3.jpg");
-	//Mat backgroundImage = imread("backgroundImage.png");
-	Mat image = imread("TestPhotos/dice3.jpg");
-	Mat imageGameState = imread("TestPhotos/gameState3.jpg");
-	if(image.empty()){
-		cerr << "Failed to read input image"<<endl;
-		exit(EXIT_FAILURE);
+	
+	Mat backgroundImage;
+	backgroundImage = imread("backgroundImage.png");
+	if(backgroundImage.empty()){
+		while(1){
+			cap.read(backgroundImage);
+			imshowresize("Press esc to capture backgroundImage",backgroundImage,false,false);
+			char key = cv::waitKey(1);
+			if (key == 27) {
+				imwrite("backgroundImage.png",backgroundImage);
+				destroyWindow("Press esc to capture backgroundImage");
+				break;
+			}
+		}
 	}
 	
-	
     vector<Tile> hexagons=findAllHexTiles(backgroundImage);
-   
   	hexagons = assignTileNumbers(cap,hexagons);
+   	while(1){
+   		cap.read(backgroundImage);
+   		imshowresize("Board",backgroundImage,false,false);
+   		char key = cv::waitKey(1);
+		if (key == 27) break;
+   	}
+  
+  	destroyAllWindows();
   	Player player1(red);
   	Player player2(blue);
   	vector<Player> gamePlayers={player1,player2};
@@ -57,21 +64,22 @@ void processNextTurn(VideoCapture& cap,vector<Player> gamePlayers,vector<Tile> h
 
 	vector<int> dice;
 	Mat frame;
-	for(int i=0;i<120;i++){
-		cap>>frame;
-	}
-	while(dice.size()<2){
-		cap>>frame;
+	cap.read(frame);
+	imshowresize("frame",frame);
+	while(1){
+		cap.read(frame);
 		dice= findArucoDiceTags(frame);
-		cout<<dice.size();
+		if(dice.size()==2){
+			break;
+		}
 	}
-	cap>>frame;
+	destroyAllWindows();
+
+	cap.read(frame);
 	int diceroll=dice.at(0)+dice.at(1);
 	cout<<"Dice roll: "<<diceroll<<endl;
-	//robber
-	//Point2f robber = findRobber(frame);
-	Point2f robber =Point2f(0,0);
-	cap>>frame;
+	Point2f robber = findRobber(frame);
+	cap.read(frame);
 	vector<Piece> pieces = findPieces(frame);
 	for(auto &player:gamePlayers){
 		player.set_score(0);
@@ -124,16 +132,24 @@ void processNextTurn(VideoCapture& cap,vector<Player> gamePlayers,vector<Tile> h
 							break;
 					}
 					if(resource.length()>0){
-						cout<<"Player "<<p.get_color()<<" receives "<<multiplicity<<" "<<resource<<endl;
+						cout<<"Player "<<p.print_color()<<" receives "<<multiplicity<<" "<<resource<<endl;
 					}
 				}
 			}
 		}
 
 	}
-	cap>>frame;
+	cap.read(frame);
 	Color largestArmy = findCardOwner(frame,"largestArmy.jpg");
+	cap.read(frame);
+	Color longestRoad = findCardOwner(frame,"longestRoad.jpg");
 	for(auto& player:gamePlayers){
-		cout<<"Player: "<<player.get_color()<<" score: "<<player.get_score()<<endl;
+		if(player.get_color()==largestArmy){
+			player.add_score(2);
+		}
+		if(player.get_color()==longestRoad){
+			player.add_score(2);
+		}
+		cout<<"Player: "<<player.print_color()<<" score: "<<player.get_score()<<endl;
 	}
 }

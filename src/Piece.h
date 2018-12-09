@@ -24,5 +24,25 @@ public:
 	Color get_color() const {return color;}
 	PieceType get_type() const {return type;}
 	Point2f get_loc() const {return location;}
+		string print_color(){
+		Color switchCase = color;
+		switch(switchCase){
+			case red:
+				return "red";
+				break;
+			case blue:
+				return "blue";
+				break;
+			case orange:
+				return "orange";
+				break;
+			case white:
+				return "white";
+				break;
+			default:
+				break;
+		}
+		return "";
+	}
 };
 

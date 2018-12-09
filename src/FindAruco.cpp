@@ -28,7 +28,7 @@ vector<int> findArucoDiceTags (const Mat& image){
 		vector<Vec3d> rvecs, tvecs;
 		aruco::estimatePoseSingleMarkers(markerCorners, markerLength, K, distCoeffs,	rvecs, tvecs);
 		std::vector<cv::Point2d> p;
-		//imshowresize("aruco",image,false,false);
+		imshowresize("aruco",image,false,false);
 	}
 	vector<int>diceMarkers;
 	for (auto & i: markerIds){
@@ -82,7 +82,7 @@ vector<Tile> assignTileNumbers(VideoCapture& cap,vector<Tile> hexagons){
 	size_t count=0;
   	vector<numberLocation> maxNumberLocations;
 	Mat imCap;
-    while(count<18){
+    while(1){
     	cap>>imCap;
 		vector<numberLocation> numberLocations =findArucoNumberTags(imCap);
 		for(auto&num: numberLocations){
@@ -98,15 +98,13 @@ vector<Tile> assignTileNumbers(VideoCapture& cap,vector<Tile> hexagons){
 		} 
 		cout<<"Count: "<<count<<endl;
 		numberLocations.clear();
-		char key = cv::waitKey(1);
-		if (key == 27) break; 
+		cv::waitKey(1);
+		if (count==18) break; 
     }
 
     for(auto& h:hexagons){
    		putText(imCap,to_string(h.get_number()),h.get_loc(),FONT_HERSHEY_SIMPLEX,1,Scalar(0,0,0),2);
    	}
    	imshowresize("nums",imCap);
-   	imwrite("Aruco.png",imCap);
-   //	cap.release();
     return hexagons;
 }
