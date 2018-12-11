@@ -2,6 +2,8 @@
 #include "Constants.h"
 using namespace cv;
 using namespace std;
+
+//A simple function that extends the default imshow function to automatically scale for smaller screens
 void imshowresize(string name,const Mat& image,bool wait, bool destroy){
 	Mat imageResized;
 	resize(image,imageResized,Size(),SCALE,SCALE);
@@ -67,6 +69,8 @@ Mat isolateColor(const Mat& image, char color){
 	}
 	return output;
 }
+
+//Finds the outer contour of the hexagonal game board
 vector<vector<cv::Point>> findGameBoard(const Mat& input){
 	
 	Mat imageBW=~isolateColor(input,'t');

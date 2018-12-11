@@ -1,14 +1,8 @@
 #pragma once
-//These values will depend on relative size of dice in frame
+//Essential program constant values, used in multiple places.
 const double SCALE=0.5;
-const double DICE_AREA_MAX_THRESHOLD=800;
-const double DICE_AREA_MIN_THRESHOLD=650;
-const double DOT_AREA_MAX_THRESHOLD=40;
-const double DOT_AREA_MIN_THRESHOLD=5;
 const double BOARD_AREA_MIN_THRESHOLD=300000;
 const double BOARD_AREA_MAX_THRESHOLD=800000;
-const double HEX_AREA_MAX_THRESHOLD=30000;
-const double HEX_AREA_MIN_THRESHOLD=15000;
 const double HEX_RADIUS=110;
 const double PIECE_AREA_MIN_THRESHOLD=120;
 const double PIECE_AREA_MAX_THRESHOLD=900;

@@ -9,6 +9,11 @@ double K_[3][3] =
 { 0, 2000, 1080/2 },
 { 0, 0, 1 } };
 
+
+/** Finds the ArUco tags corresponding to the dice.
+* Returns the dice number corresponding to each of the
+* dice tags found.
+*/
 vector<int> findArucoDiceTags (const Mat& image){
 	const float markerLength = 0.5;
 
@@ -38,6 +43,10 @@ vector<int> findArucoDiceTags (const Mat& image){
 	}
 	return diceMarkers;
 }
+
+/** Finds the ArUco tags corresponding to the game board numbers.
+*	Returns a vector of numbers corresponding to the tags found.
+*/
 vector<numberLocation> findArucoNumberTags (const Mat& image){
 	const float markerLength = 0.5;
 	Mat K = Mat(3, 3, CV_64F, K_).clone();
@@ -77,8 +86,11 @@ vector<numberLocation> findArucoNumberTags (const Mat& image){
 		
 		return numberLocations;
 }
+/** Goes through each of the frames and attempts to find the ArUco tags
+*	Keeps track of the tags found in each frame and continues until 
+*	every tag is found.
+*/
 vector<Tile> assignTileNumbers(VideoCapture& cap,vector<Tile> hexagons){
-	//VideoCapture cap(CAP_NUM);
 	size_t count=0;
   	vector<numberLocation> maxNumberLocations;
 	Mat imCap;

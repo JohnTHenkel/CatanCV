@@ -1,12 +1,15 @@
 #include "Hexagon.h"
 #include "FindAruco.h"
 #include "FindBoardLocs.h"
+
+/** Finds the hexagon tiles with surf, corrects thier centers, and returns a vector of tiles
+* corrresponding to each of the smaller hexagonal game board pieces.
+*/ 
 vector<Tile> findAllHexTiles(const Mat& image){
 	Mat hexImage=image.clone();
 	vector<Point2f> centers;
 	int radius=110;
 	vector<string> templates={
-//	"desert.jpg",
 	"sheep1.jpg",
 	"sheep2.jpg",
 	"sheep3.jpg",
@@ -97,6 +100,8 @@ vector<Tile> findAllHexTiles(const Mat& image){
 	imshowresize("labels",hexImage);
 	return hexagons;
 }
+
+//Finds a single hexagonal tile using SURF and returns its center
 Point2f findSingleHexTile(const Mat& image,const string name){
 	Mat img_scene_color=image;
 	using namespace cv::xfeatures2d;
@@ -107,7 +112,6 @@ Point2f findSingleHexTile(const Mat& image,const string name){
 	cvtColor(img_scene_color, img_scene, COLOR_BGR2GRAY);
 	cvtColor(img_object, img_object, COLOR_BGR2GRAY);
 	//detect keypoints
-	//int minHessian = 400;
 	int minHessian = 80;
 	if(name.substr(0,5)=="sheep") minHessian=30;
 	Ptr<SURF> detector = SURF::create(minHessian);
@@ -120,7 +124,6 @@ Point2f findSingleHexTile(const Mat& image,const string name){
     	vector< vector<DMatch> > knn_matches;
     	matcher->knnMatch( descriptors_object, descriptors_scene, knn_matches, 2 );
 	//filter matches
-	//const float ratio_thresh = 0.75f;
 	const float ratio_thresh = 0.6f;
     	vector<DMatch> good_matches;
     	for (size_t i = 0; i < knn_matches.size(); i++)
@@ -143,19 +146,6 @@ Point2f findSingleHexTile(const Mat& image,const string name){
 	}
 
 	Mat tform = findHomography(obj, scene, RANSAC);
-	/*
-	vector<Point2f> obj_corners(4);
-    	obj_corners[0] = Point2f(0, 0);
-    	obj_corners[1] = Point2f( (float)img_object.cols, 0 );
-    	obj_corners[2] = Point2f( (float)img_object.cols, (float)img_object.rows );
-    	obj_corners[3] = Point2f( 0, (float)img_object.rows );
-    	vector<Point2f> scene_corners(4);
-    	perspectiveTransform( obj_corners, scene_corners, tform);
-	line( img_matches, scene_corners[0] + Point2f((float)img_object.cols, 0),scene_corners[1] + Point2f((float)img_object.cols, 0), Scalar(0, 255, 0), 4 );
-    	line( img_matches, scene_corners[1] + Point2f((float)img_object.cols, 0),scene_corners[2] + Point2f((float)img_object.cols, 0), Scalar( 0, 255, 0), 4 );
-    	line( img_matches, scene_corners[2] + Point2f((float)img_object.cols, 0),scene_corners[3] + Point2f((float)img_object.cols, 0), Scalar( 0, 255, 0), 4 );
-    	line( img_matches, scene_corners[3] + Point2f((float)img_object.cols, 0),scene_corners[0] + Point2f((float)img_object.cols, 0), Scalar( 0, 255, 0), 4 );
-	*/
 	vector<Point2f> obj_corners(6);
 	obj_corners[0] = Point2f(53,8);
 	obj_corners[1] = Point2f(151,8);
@@ -194,8 +184,9 @@ Point2f findSingleHexTile(const Mat& image,const string name){
 	
 	return(center);
 }
+
+//Corrects the centers based on the location of the game board
 vector<Point2f> correctCenters(vector<Point2f> centers,const Mat& image){
-	//TODO: Implement
 	vector<Point2f>newCenters=centers;
 	Mat im=image;
 	vector<Point2f> boardCenters = findBoardLocs(im);
@@ -216,23 +207,4 @@ vector<Point2f> correctCenters(vector<Point2f> centers,const Mat& image){
 	newCenters.push_back(boardCenters.at(0));
 	return newCenters;
 }
-void mapHexagons(const Mat& input){
-	Mat imageGray;
-	Mat imageBW;
-	cvtColor(input,imageGray,COLOR_BGR2GRAY);
-	adaptiveThreshold(imageGray,imageBW,255,ADAPTIVE_THRESH_GAUSSIAN_C,THRESH_BINARY,3,0);
-	//threshold(imageGray,imageBW,150,255,THRESH_OTSU);	
-	imshowresize("BW",imageBW);
-	vector<vector<Point>> allContours;
-	findContours(imageBW,allContours,RETR_CCOMP,CHAIN_APPROX_NONE);
-	for (size_t i=allContours.size()-1;i!=-1;i--){
-		double area=contourArea(allContours.at(i));
-		if((area>HEX_AREA_MAX_THRESHOLD)||(area<HEX_AREA_MIN_THRESHOLD)){
-			allContours.erase(allContours.begin()+i);
-		}
-	}
-	drawContours(input,allContours,-1,Scalar(0,255,0),2,8);
-	imshowresize("contours",input);
-	imshow("contours",input);
-	
-}
+

@@ -1,12 +1,10 @@
 #include "FindPieces.h"
 
-//void findPieces(const Mat& image){
+//Find the cities, settlements, and roads 
+//Currently only capable of finding red and blue pieces
 vector<Piece> findPieces(const Mat& image){
 	Mat redImage = isolateColor(image, 'r');
 	Mat blueImage = isolateColor(image, 'b');
-	//imshow("red",redImage);
-	//imshow("blue",blueImage);
-	//waitKey(0);
 	//get contour of outer edge of board
 	vector<vector<Point>> boardContour=findGameBoard(image);
 	cout<<boardContour.size()<<endl;
@@ -60,8 +58,6 @@ vector<Piece> findPieces(const Mat& image){
 	for(int i=0; i<bluePieceContours.size();i++){
 		drawContours(image,bluePieceContours,i,Scalar(255,0,0),2,8);
 	}
-	//imshow("pieces",image);
-	//waitKey(0);
 	vector<Piece> output;
 	for(int i=0; i<redPieceContours.size();i++){
 		output.push_back(Piece(red,defineType(redPieceContours.at(i)),redCentroids.at(i)));
@@ -90,24 +86,6 @@ vector<Piece> findPieces(const Mat& image){
 	imshowresize("pieces",image);
 
 
-	/*
-	//DEBUG
-	Mat drawing = image;
-	vector<RotatedRect> minRect(bluePieceContours.size());
-	for(int i=0; i< bluePieceContours.size();i++){
-		minRect[i] = minAreaRect(bluePieceContours.at(i));
-		Point2f rect_points[4];
-		minRect[i].points(rect_points);
-		for( int j = 0; j < 4; j++ ){
-          		line( drawing, rect_points[j], rect_points[(j+1)%4], Scalar(0,255,0), 3, 8 );
-     		}
-	}
-	imshow("rotated rects", drawing);
-	waitKey(0);
-	*/
-
-
-
 	return output;
 }
 
@@ -129,19 +107,18 @@ PieceType defineType(vector<Point> input){
 	return settlement;
 }
 
+
+//Finds the location of the robber on the game board
 Point2f findRobber(const Mat& image){
 	Mat imageHSV;
 	Mat binaryImage;
 	Mat image2 = image.clone();
 	cvtColor(image, imageHSV, COLOR_BGR2HSV);
 	inRange(imageHSV, Scalar(0,0,20), Scalar(255,100,235), binaryImage);
-	//imshow("grey", binaryImage);
-	//waitKey(0);
 	vector<vector<Point>> contours;
 	vector<vector<Point>> contoursAll;
 	vector<Point2f> centroids;
         findContours(binaryImage,contoursAll,RETR_CCOMP,CHAIN_APPROX_NONE);
-	//binaryImage = ~binaryImage;
 	vector<Point2f> boardLocs = findBoardLocs(image2);
 	for(int i=0; i<contoursAll.size(); i++){
 		double area=contourArea(contoursAll.at(i));//find area
@@ -168,7 +145,6 @@ Point2f findRobber(const Mat& image){
 	if(contours.size()==0) return Point2f(0,0);
 	drawContours(image,contours,centroidIndex,Scalar(0,0,0),2,8);
 	circle(image,centroids.at(centroidIndex),4,Scalar(255,0,0),4,8,0);
-	//imwrite("Output/findRobber.bmp", image);
 	imshowresize("robber",image);
 	return boardLocs.at(boardLocIndex);
 }

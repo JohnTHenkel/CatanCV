@@ -23,6 +23,10 @@ void processNextTurn(VideoCapture& cap,vector<Player> gamePlayers,vector<Tile> h
 int main(int argc, char* argv[]){
 	 VideoCapture cap(CAP_NUM);
 	
+
+	/** Attempts to open a default background image. If none is found, uses webcam to capture
+	*	ands prompts user to press esc when they are ready to capture the background.
+	*/
 	Mat backgroundImage;
 	backgroundImage = imread("backgroundImage.png");
 	if(backgroundImage.empty()){
@@ -37,9 +41,12 @@ int main(int argc, char* argv[]){
 			}
 		}
 	}
-	
+	//Finds the hexagons resource pieces in the image
     vector<Tile> hexagons=findAllHexTiles(backgroundImage);
+    //Assigns the tile numbers to the hexagons found in the previous step.
   	hexagons = assignTileNumbers(cap,hexagons);
+
+  	//Gives the user tile to rearrange the game board after the initial read in step
    	while(1){
    		cap.read(backgroundImage);
    		imshowresize("Board",backgroundImage,false,false);
@@ -51,15 +58,20 @@ int main(int argc, char* argv[]){
   	Player player1(red);
   	Player player2(blue);
   	vector<Player> gamePlayers={player1,player2};
+
+  	//Processes turns while the players have not won the game
    	while(!((player1.get_score()>9))&&(!(player2.get_score()>9))){
 		processNextTurn(cap, gamePlayers,hexagons); 
-		
-
    	}
 
    	return EXIT_SUCCESS;
 }
 
+/**	Handles resolution of dice roll, resource distribution, robber locating,
+* city, settlement and road locating, longest road and largest army card locating,
+* and scoring. 
+* Scoring and resource distributions are printed to the command line.
+*/
 void processNextTurn(VideoCapture& cap,vector<Player> gamePlayers,vector<Tile> hexagons){
 
 	vector<int> dice;
@@ -106,7 +118,6 @@ void processNextTurn(VideoCapture& cap,vector<Player> gamePlayers,vector<Tile> h
 		}
 		for(auto& h: hexagons){
 			double distance=norm(p.get_loc()-h.get_loc());
-			//check for robber
 			double robberDistance=norm(h.get_loc()-robber);
 		
 			if(distance>60&&distance<110&&diceroll==h.get_number()&&robberDistance>50){
@@ -124,7 +135,10 @@ void processNextTurn(VideoCapture& cap,vector<Player> gamePlayers,vector<Tile> h
 							resource="brick";
 							break;
 						case stone:
-							resource+"stone";
+							resource="stone";
+							break;
+						case wood:
+							resource="wood";
 							break;
 						case desert:
 							break;

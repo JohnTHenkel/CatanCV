@@ -1,19 +1,11 @@
 #include "FindBoardLocs.h"
 #include "Tile.h"
 
-vector<Tile> initTiles(const Mat& image){
-	vector<Tile> output;
-	vector<Point2f> locs = findBoardLocs(image);
-	for(int i=0; i<locs.size(); i++){
-		output.push_back(Tile(locs.at(i)));
-	}
-	//find recource
-	//find number
-	return output;
-}
 
 
-
+/** Finds the centers of the hexagons on the game board using the outer contour of the 
+* game board and a homography. Used to correct the tile centers. 
+*/
 vector<Point2f> findBoardLocs(const Mat& image){
 	Mat im=image.clone();
 	vector<vector<Point>> boardContour=findGameBoard(im);

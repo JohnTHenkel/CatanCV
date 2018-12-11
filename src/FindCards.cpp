@@ -2,6 +2,7 @@
 
 
 //ASSUME A RED AND BLUE PILE ON OUTSIDE OF BOARD
+//Finds the owner of the given card (army, road) and returns the corresponding color
 Color findCardOwner(const Mat& image, const string name){
 	Point2f card = findCard(image, name);
 	if(card.x==0&&card.y==0){
@@ -72,7 +73,6 @@ Color findCardOwner(const Mat& image, const string name){
 			blueMinDist = distance;
 		}
         }
-	//imwrite("Output/findCard.bmp",image);
 	imshowresize("red and blue contours",image);
         waitKey(0);
 	if(redMinDist < blueMinDist){
@@ -88,18 +88,15 @@ Color findCardOwner(const Mat& image, const string name){
 
 
 
-
+//Performs the actual card finding of the previous function
 Point2f findCard(const Mat& image,const string name){
 	Mat img_scene_color=image;
-	//using namespace cv::xfeatures2d;
 	string imagePath = "Templates/";
 	imagePath.append(name);
 	Mat img_object = imread(imagePath);
 	Mat img_scene;
 	cvtColor(img_scene_color, img_scene, COLOR_BGR2GRAY);
 	cvtColor(img_object, img_object, COLOR_BGR2GRAY);
-	//detect keypoints
-	//int minHessian = 400;
 	int minHessian = 200;
 	Ptr<SURF> detector = SURF::create(minHessian);
 	vector<KeyPoint> keypoints_object, keypoints_scene;
@@ -111,7 +108,6 @@ Point2f findCard(const Mat& image,const string name){
     	vector< vector<DMatch> > knn_matches;
     	matcher->knnMatch( descriptors_object, descriptors_scene, knn_matches, 2 );
 	//filter matches
-	//const float ratio_thresh = 0.75f;
 	const float ratio_thresh = 0.6f;
     	vector<DMatch> good_matches;
     	for (size_t i = 0; i < knn_matches.size(); i++)
@@ -149,7 +145,7 @@ Point2f findCard(const Mat& image,const string name){
     	obj_corners[3] = Point2f( 0, (float)img_object.rows );
 	obj_corners[4] = Point2f((float)img_object.cols/2,(float)img_object.rows/2);
     	vector<Point2f> scene_corners(5);
-    	try{	
+    try{	
     	perspectiveTransform( obj_corners, scene_corners, tform);
     }catch(...){
     	return Point2f(0,0);
